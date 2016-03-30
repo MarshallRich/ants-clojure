@@ -16,12 +16,29 @@
 (defn create-ants []
   (for [i (range ant-count)]
     {:x (rand-int width)
-     :y (rand-int height)}))
+     :y (rand-int height)
+     :color Color/BLACK}))
+     
+
+
+
+(defn aggrivate-ant [ant]
+  (Thread/sleep 1)
+  (if (> (count (filter  
+                    (fn [a] (and (< (Math/abs (- (:x a) (:x ant))) 10)
+                                 (< (Math/abs (- (:y a) (:y ant))) 10)))
+                    @ants)) 1)
+    (assoc ant
+        :color Color/RED)
+    (assoc ant
+        :color Color/BLACK)))
+    
+
 
 (defn draw-ants! [context]
   (.clearRect context 0 0 width height)
   (doseq [ant @ants]
-    (.setFill context Color/BLACK)
+    (.setFill context (:color ant))
     (.fillOval context (:x ant) (:y ant) 5 5)))
 
 (defn random-step []
@@ -48,7 +65,7 @@
                 (handle [now]
                   (.setText fps-label (str (fps now)))
                   (reset! last-timestamp now)
-                  (reset! ants (pmap move-ant @ants))
+                  (reset! ants (doall (pmap aggrivate-ant (pmap move-ant @ants))))
                   (draw-ants! context)))]
     (reset! ants (create-ants))
     (.setTitle stage "Ants")
