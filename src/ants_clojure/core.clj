@@ -22,7 +22,7 @@
 
 
 
-(defn aggrivate-ant [ant]
+(defn aggravate-ant [ant]
   (Thread/sleep 1)
   (if (> (count (filter  
                     (fn [a] (and (< (Math/abs (- (:x a) (:x ant))) 10)
@@ -65,7 +65,7 @@
                 (handle [now]
                   (.setText fps-label (str (fps now)))
                   (reset! last-timestamp now)
-                  (reset! ants (doall (pmap aggrivate-ant (pmap move-ant @ants))))
+                  (reset! ants (doall (pmap aggravate-ant (pmap move-ant @ants))))
                   (draw-ants! context)))]
     (reset! ants (create-ants))
     (.setTitle stage "Ants")
